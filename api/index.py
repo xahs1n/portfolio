@@ -95,6 +95,7 @@ def get_model():
     )
 
 @app.route("/api/chat", methods=["POST", "OPTIONS"])
+@app.route("/chat", methods=["POST", "OPTIONS"])
 def chat():
     if request.method == "OPTIONS":
         return jsonify({"status": "ok"})
@@ -105,7 +106,14 @@ def chat():
     if not user_message:
         return jsonify({"reply": "Please provide a message."}), 400
         
+    api_key = os.environ.get("GEMINI_API_KEY", "")
+    if not api_key:
+        return jsonify({
+            "reply": "Error: GEMINI_API_KEY is not configured in Vercel Environment Variables. Please set it in your Vercel Project Settings."
+        }), 500
+
     try:
+        genai.configure(api_key=api_key)
         model = get_model()
         response = model.generate_content(user_message)
         reply = response.text
