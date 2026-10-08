@@ -95,6 +95,7 @@ def index():
 
 @app.route("/api/chat", methods=["POST", "OPTIONS"])
 @app.route("/chat", methods=["POST", "OPTIONS"])
+@app.route("/api/index.py", methods=["POST", "OPTIONS"])
 def chat():
     if request.method == "OPTIONS":
         return jsonify({"status": "ok"})
